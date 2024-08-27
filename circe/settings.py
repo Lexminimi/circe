@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['fischerb2.pythonanywhere.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'hops.apps.HopsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
