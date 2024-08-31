@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from hops import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("groups/", views.trainingGroups, name="trainingGroups"),
+    path("group/<int:group_id>/", views.groupMembers, name="groupMembers")
 ]

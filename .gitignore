@@ -5,3 +5,9 @@
 .idea/inspectionProfiles/Project_Default.xml
 .idea/misc.xml
 .idea/modules.xml
+/circe/__pycache__
+db.sqlite3
+/hops/__pycache__
+db.sqlite3
+/hops/migrations
+circe/settings.py
