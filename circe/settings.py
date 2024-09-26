@@ -24,8 +24,8 @@ SECRET_KEY = 'django-insecure-ad^m1=!8pay154-2s@k0%!e#t!96(9)8+i^e*@6c-8dbg0glc^
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ['fischerb2.pythonanywhere.com']
+ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['fischerb2.pythonanywhere.com']
 
 
 # Application definition
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'circe.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['hops/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,9 +123,22 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+
+STATIC_URL = 'static/'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 # default static files settings for PythonAnywhere.
 # see https://help.pythonanywhere.com/pages/DjangoStaticFiles for more info
-MEDIA_ROOT = '/home/fischerb2/circe/media'
-MEDIA_URL = '/media/'
-STATIC_ROOT = '/home/fischerb2/circe/static'
-STATIC_URL = '/static/'
+#MEDIA_ROOT = '/home/fischerb2/circe/media'
+#MEDIA_URL = '/media/'
+#STATIC_ROOT = '/home/fischerb2/circe/static'
+#STATIC_URL = '/static/'

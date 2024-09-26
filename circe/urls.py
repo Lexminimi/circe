@@ -19,7 +19,8 @@ from django.urls import path
 from hops import views
 
 urlpatterns = [
+    path('', views.trainingGroups, name="trainingGroups"),
     path('admin/', admin.site.urls),
     path("groups/", views.trainingGroups, name="trainingGroups"),
-    path("group/<int:group_id>/", views.groupMembers, name="groupMembers")
+    path("attendance/<int:group_id>/", views.AttendanceSheet, name = "groupMembers")
 ]

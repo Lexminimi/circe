@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students by Class Group</title>
+</head>
+<body>
+    <h2>Students in Class</h2>
+        <table>
+            {% for student in students %}
+                <tr><td>{{ student.id }} </td><td>{{ student.name }}</td></tr>
+            {% endfor %}
+        </table>
+<a href="../../"><input type="button" value="Back" class="btn btn-primary" /></a>
+</body>
+</html>

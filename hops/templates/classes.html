@@ -1,0 +1,10 @@
+</head>
+<body>
+    <h2>Choose class</h2>
+        <table>
+            {% for class in classes %}
+            <tr><td><a href=attendance/{{class.id}}>{{ class.groupName }}</a></td></tr>
+            {% endfor %}
+        </table>
+</body>
+</html>

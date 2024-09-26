@@ -32,6 +32,8 @@ class Classes(models.Model):
     hour = models.TimeField(auto_now=False, auto_now_add=False)
     classGroup = models.ForeignKey(ClassGroups, on_delete=models.CASCADE)
 
+class Presence(models.Model):
+    title = models.CharField(max_length = 100)
 
 class Attendance(models.Model):
     '''
@@ -39,3 +41,5 @@ class Attendance(models.Model):
     '''
     date = models.DateTimeField("date published")
     group = models.ForeignKey(ClassGroups, on_delete = models.CASCADE)
+    studentID = models.ForeignKey(Students, on_delete = models.CASCADE)
+    presence = models.ForeignKey(Presence, on_delete = models.CASCADE)
