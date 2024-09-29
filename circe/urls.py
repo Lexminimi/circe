@@ -14,13 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import path, include
+from rest_framework import routers
 from hops import views
+from hops.views import AttendanceViewSet
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
+router.register(r'attendance', AttendanceViewSet, basename = "attendance")
 
 urlpatterns = [
-    path('', views.trainingGroups, name="trainingGroups"),
+    path('', include(router.urls)),
+    path('groups/', views.classgroup_list),
+    path('group/<int:pk>', views.classgroup_detail),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path("groups/", views.trainingGroups, name="trainingGroups"),
-    path("attendance/<int:group_id>/", views.AttendanceSheet, name = "groupMembers")
+    #path("groups/", views.trainingGroups, name="trainingGroups"),
+    #path('api-auth/', include('rest_framework.urls'))
 ]

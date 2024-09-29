@@ -4,6 +4,68 @@ from .models import Students, ClassGroups
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from .forms import AttendanceForm
+from django.contrib.auth.models import Group, User
+from rest_framework import permissions, viewsets, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from hops.serializers import GroupSerializer, UserSerializer, ClassGroupSerializer
+
+
+@api_view(['GET'])
+def classgroup_list(request):
+    try:
+        group = ClassGroups.objects.all()
+        serializer = GroupSerializer(group, many=True)
+        print(serializer)
+        return Response(serializer.data)
+    except ClassGroups.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def classgroup_detail(request, pk):
+    group = ClassGroups.objects.get(pk  = pk)
+    if request.method == 'GET':
+        serializer = GroupSerializer(group)
+        return Response(serializer.data)
+
+class GroupStudentsView(viewsets.ModelViewSet):
+    """
+    Retrieve students belonging to a specific group
+    """
+    def rertrieve(self, pk):
+        queryset = ClassGroups.objects.all()
+        serializer_class = get_object_or_404(queryset, pk=pk)
+        permission_classes = [permissions.AllowAny]
+        return Response(serializer_class.data)
+
+    permission_classes = [permissions.AllowAny]
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all().order_by('name')
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class AttendanceViewSet(viewsets.ModelViewSet):
+
+    def retrieve(self, request, pk = None):
+        queryset =  ClassGroups.objects.all()
+        group = get_object_or_404(queryset, pk=pk).members.all()
+        serializer_class = ClassGroupSerializer(group)
+        permission_classes = [permissions.AllowAny]
+
 
 
 def index(request):
