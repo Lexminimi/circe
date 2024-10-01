@@ -3,7 +3,11 @@ from django.contrib.auth.models import User
 
 
 def teacher_default():
-    return User.objects.order_by('id').first().id
+    user = User.objects.order_by('id').first()
+    if user:
+        return user.id
+    else:
+        return 1
 
 
 class Students(models.Model):
