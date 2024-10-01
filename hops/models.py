@@ -22,17 +22,9 @@ class ClassGroups(models.Model):
     members = models.ManyToManyField(Students)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, default = teacher_default())
 
-class Classes(models.Model):
-    '''
-    Class object
-    '''
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, default = teacher_default())
-    name = models.CharField(max_length=100)
-    days = models.IntegerField()
-    hour = models.TimeField(auto_now=False, auto_now_add=False)
-    classGroup = models.ForeignKey(ClassGroups, on_delete=models.CASCADE)
 
 class Presence(models.Model):
+    ''' Model for different presence type verified absence, unverified absence, present'''
     title = models.CharField(max_length = 100)
 
 class Attendance(models.Model):
