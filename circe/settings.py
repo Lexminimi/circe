@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1','fischerb2.pythonanywhere.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'hops.apps.HopsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -49,6 +50,7 @@ REST_FRAMEWORK = {
     ],
 }
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +61,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'circe.urls'
+CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
     {
