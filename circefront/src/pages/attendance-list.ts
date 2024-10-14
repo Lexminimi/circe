@@ -17,6 +17,7 @@ interface Member {
 @customElement('classes-list')
 export class ClassesList extends LitElement {
   @property({ type: Array }) members: Member[] = [];
+  @property({ type: String }) groupId: string = ''; // Defined using @property decorator
 
   static styles = css`
     .student {
@@ -47,39 +48,38 @@ export class ClassesList extends LitElement {
     this.fetchGroupData();
   }
 
-async fetchGroupData() {
-  const username = 'reka';
-  const password = 'B1a9l8i8';
-  const authString = btoa(`${username}:${password}`);
+  async fetchGroupData() {
+    const username = 'reka';
+    const password = 'B1a9l8i8';
+    const authString = btoa(`${username}:${password}`);
+      console.log('Fetching group data for group ID:', this.groupId);
 
 
-  console.log('Fetching group data...');
+    console.log('Fetching group data for group ID:', this.groupId);
 
-  try {
-    const response = await fetch('http://127.0.0.1:8000/group/1', {
-      headers: {
-        'Authorization': `Basic ${authString}`,
-                'Content-Type': 'application/json'  // Ensure Content-Type is correct
+    try {
+      const response = await fetch(`https://fischerb2.pythonanywhere.com/group/${this.groupId}`, {
+        headers: {
+          'Authorization': `Basic ${authString}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    });
 
-    console.log('Response status:', response.status);
+      const data: GroupData = await response.json();
+      console.log('Data received:', data);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      this.members = data.members;
+      console.log('Members set:', this.members);
+    } catch (error) {
+      console.error('Error fetching group data:', error);
     }
-
-    const data: GroupData = await response.json();
-    console.log('Data received:', data);
-
-    this.members = data.members;
-    console.log('Members set:', this.members);
-  } catch (error) {
-    console.error('Error fetching group data:', error);
   }
-}
-
-
 
   handleSwipe(event: TouchEvent, member: Member) {
     const swipeDistance = 100; // Adjust this based on sensitivity
@@ -123,7 +123,6 @@ async fetchGroupData() {
     return html`
       <div>
         <h1>Class List</h1>
-        egyáltalán betölt...
         ${repeat(
           this.members,
           (member) => member.id,

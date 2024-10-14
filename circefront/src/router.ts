@@ -1,5 +1,3 @@
-// docs for router https://github.com/thepassle/app-tools/blob/master/router/README.md
-
 import { html } from 'lit';
 
 if (!(globalThis as any).URLPattern) {
@@ -8,7 +6,6 @@ if (!(globalThis as any).URLPattern) {
 
 import { Router } from '@thepassle/app-tools/router.js';
 import { lazy } from '@thepassle/app-tools/router/plugins/lazy.js';
-
 // @ts-ignore
 import { title } from '@thepassle/app-tools/router/plugins/title.js';
 
@@ -17,40 +14,41 @@ import './pages/app-home.js';
 const baseURL: string = (import.meta as any).env.BASE_URL;
 
 export const router = new Router({
-    routes: [
-      {
-        path: resolveRouterPath(),
-        title: 'Home',
-        render: () => html`<app-home></app-home>`
-      },
-      {
-        path: resolveRouterPath('group'),
-        title: 'Group',
-        plugins: [
-          lazy(() => import('./pages/attendance-list.js')),
-        ],
-        render: () => html`<classes-list></classes-list>`
-      },
-      {
-        path: resolveRouterPath('about'),
-        title: 'About',
-        plugins: [
-          lazy(() => import('./pages/app-about/app-about.js')),
-        ],
-        render: () => html`<app-about></app-about>`
+  routes: [
+    {
+      path: resolveRouterPath(), // Home Route
+      title: 'Home',
+      render: () => html`<app-home></app-home>`
+    },
+    {
+      path: resolveRouterPath('group/:id'), // Dynamic Group Route
+      title: 'Group',
+      plugins: [
+        lazy(() => import('./pages/attendance-list.js')), // Lazy load the attendance-list page
+      ],
+      render: (context) => {
+        const groupId = context.params.id; // Extract groupId from the route
+            console.log('Group ID from route:', groupId); // Ensure the groupId is logged and not empty
+
+        return html`<classes-list groupId="${groupId}"></classes-list>`; // Pass groupId to the classes-list component
       }
-    ]
-  });
-
-  // This function will resolve a path with whatever Base URL was passed to the vite build process.
-  // Use of this function throughout the starter is not required, but highly recommended, especially if you plan to use GitHub Pages to deploy.
-  // If no arg is passed to this function, it will return the base URL.
-
-  export function resolveRouterPath(unresolvedPath?: string) {
-    var resolvedPath = baseURL;
-    if(unresolvedPath) {
-      resolvedPath = resolvedPath + unresolvedPath;
+    },
+    {
+      path: resolveRouterPath('about'), // About Route
+      title: 'About',
+      plugins: [
+        lazy(() => import('./pages/app-about/app-about.js')), // Lazy load the about page
+      ],
+      render: () => html`<app-about></app-about>`
     }
+  ]
+});
 
-    return resolvedPath;
+// Function to resolve a path using the BASE_URL from the environment
+export function resolveRouterPath(unresolvedPath?: string) {
+  let resolvedPath = baseURL;
+  if (unresolvedPath) {
+    resolvedPath = resolvedPath + unresolvedPath;
   }
+  return resolvedPath;
+}
