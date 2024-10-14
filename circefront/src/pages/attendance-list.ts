@@ -48,16 +48,18 @@ export class ClassesList extends LitElement {
   }
 
 async fetchGroupData() {
-  const username = 'your-username';
-  const password = 'your-password';
+  const username = 'reka';
+  const password = 'B1a9l8i8';
   const authString = btoa(`${username}:${password}`);
+
 
   console.log('Fetching group data...');
 
   try {
-    const response = await fetch('https://fischerb2.pythonanywhere.com/group/1', {
+    const response = await fetch('http://127.0.0.1:8000/group/1', {
       headers: {
-        'Authorization': `Basic ${authString}`
+        'Authorization': `Basic ${authString}`,
+                'Content-Type': 'application/json'  // Ensure Content-Type is correct
       }
     });
 
