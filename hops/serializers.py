@@ -8,10 +8,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'username', 'email', 'groups']
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupsSerializer(serializers.BaseSerializer):
     class Meta:
-        model = Group
-        fields = ['url', 'name']
+        model = ClassGroups
+        fields = ['groupName']
+
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'name': instance.groupName
+        }
 
 
 class StudentSerializer(serializers.ModelSerializer):

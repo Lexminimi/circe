@@ -17,12 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from hops import views
-from hops.views import AttendanceViewSet
+
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
-router.register(r'attendance', AttendanceViewSet, basename = "attendance")
+
 
 urlpatterns = [
     path('', include(router.urls)),
