@@ -3,7 +3,7 @@
     <h1>Groups</h1>
     <ul>
       <li v-for="group in groups" :key="group.id">
-        <a :href="`https://fischerb2.pythonanywhere.com/group/${group.id}`">{{ group.name }}</a>
+        <router-link :to="`/group/${group.id}`">{{ group.name }}</router-link>
       </li>
     </ul>
   </div>
@@ -14,30 +14,33 @@ export default {
   data() {
     return {
       groups: [],
-    };
+    }
   },
   methods: {
     async fetchGroups() {
       try {
-        const response = await fetch("https://fischerb2.pythonanywhere.com/groups", {
-          headers: {
-            Authorization: "Basic " + btoa("reka:B1a9l8i8"),
+        const response = await fetch(
+          'https://fischerb2.pythonanywhere.com/groups',
+          {
+            headers: {
+              Authorization: 'Basic ' + btoa('reka:B1a9l8i8'),
+            },
           },
-        });
+        )
         if (!response.ok) {
-          throw new Error("Failed to fetch data");
+          throw new Error('Failed to fetch data')
         }
-        const data = await response.json();
-        this.groups = data; // assuming data is an array of groups
+        const data = await response.json()
+        this.groups = data // assuming data is an array of groups
       } catch (error) {
-        console.error("Error fetching groups:", error);
+        console.error('Error fetching groups:', error)
       }
     },
   },
   mounted() {
-    this.fetchGroups();
+    this.fetchGroups()
   },
-};
+}
 </script>
 
 <style scoped>
