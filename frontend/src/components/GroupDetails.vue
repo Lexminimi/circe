@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Group Details for Group ID: {{ groupId }}</h1>
+    <h1>Group ID: {{ groupId }}</h1>
     <div v-if="groupData">
       <h2>{{ groupData.groupName }}</h2>
       <!-- Render other details about the group here -->
@@ -86,7 +86,7 @@ li {
 }
 
 li.highlighted {
-  background-color: lightblue;
+  background-color: #2e7d32;
   font-weight: bold;
 }
 </style>

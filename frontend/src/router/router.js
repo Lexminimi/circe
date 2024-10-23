@@ -6,6 +6,7 @@ import GroupList from '@/components/GroupList.vue'
 import GroupDetails from '@/components/GroupDetails.vue'
 
 const routes = [
+  { path: '/', component: HomeView },
   { path: '/groups', component: GroupList },
   { path: '/group/:id', name: 'GroupDetails', component: GroupDetails },
 ]

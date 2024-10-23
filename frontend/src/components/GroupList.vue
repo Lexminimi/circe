@@ -1,12 +1,12 @@
 <template>
   <div>
     <h1>Groups</h1>
-    <div v-if="loading" class="loading">Loading...</div>
-    <ul>
-      <li v-for="group in groups" :key="group.id">
+    <div class="options">
+      <div v-if="loading" class="loading">Loading...</div>
+      <div class="option" v-for="group in groups" :key="group.id">
         <router-link :to="`/group/${group.id}`">{{ group.name }}</router-link>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -57,11 +57,22 @@ ul {
 li {
   margin-bottom: 10px;
 }
-a {
-  color: blue;
-  text-decoration: none;
-}
+
 a:hover {
   text-decoration: underline;
+}
+
+.options {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.option {
+  padding: 10px;
+  background-color: #333;
+  border-radius: 10px;
+  width: 80px;
+  text-align: center;
 }
 </style>
