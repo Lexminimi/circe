@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('groups/', views.classgroup_list),
     path('group/<int:pk>', views.classgroup_detail),
+    path('attendance/<int:pk>', views.attendence_create),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     #path("groups/", views.trainingGroups, name="trainingGroups"),

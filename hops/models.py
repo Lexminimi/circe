@@ -37,7 +37,7 @@ class Attendance(models.Model):
     '''
     date = models.DateTimeField("date published")
     #serializer_class = ClassSerializer
-    http_method_names = ['post']
+    #http_method_names = ['post']
     group = models.ForeignKey(ClassGroups, on_delete = models.CASCADE)
     studentID = models.ForeignKey(Students, on_delete = models.CASCADE)
     presence = models.ForeignKey(Presence, on_delete = models.CASCADE)

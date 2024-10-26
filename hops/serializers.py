@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
-from hops.models import ClassGroups, Students
+from hops.models import ClassGroups, Students, Attendance
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -40,3 +40,13 @@ class GroupSerializer(serializers.ModelSerializer):
         model = ClassGroups
         fields = ['id', 'groupName', 'members']
 
+class AttendenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = ['id', 'date', 'group', 'studentID', 'presence']
+
+    def create(self, validated_data):
+        """
+        Create and return a new `Attendance` instance, given the validated data.
+        """
+        return Attendance.objects.create(**validated_data)
