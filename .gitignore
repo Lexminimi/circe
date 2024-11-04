@@ -15,3 +15,7 @@ db.sqlite3
 db.sqlite3
 db.sqlite3
 db.sqlite3
+db.sqlite3
+*.sqlite3
+circefront/package-lock.json
+circefront/package.json

@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group, User
 from rest_framework import permissions, viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from hops.serializers import GroupSerializer, UserSerializer, ClassGroupSerializer, GroupsSerializer, AttendenceSerializer
+from hops.serializers import GroupSerializer, UserSerializer, GroupsSerializer, AttendanceSerializer
 
 
 @api_view(['GET'])
@@ -36,30 +36,37 @@ import logging
 # Set up logging
 logger = logging.getLogger(__name__)
 
-@api_view(['POST'])
-def attendence_create(request, pk):
-    if request.method == 'POST':
-        serializer = AttendenceSerializer(data=request.data)
-        # Get current date
-        today = datetime.today()
-        logger.info(f"Today's date: {today}")
+@api_view(['POST', 'GET'])
+def attendance( request, group_id, date=None):
+    if request.method == 'GET':
+        logger.warning("Platform is running at GET")
+        # Retrieve attendance record by group and date
+        attendance = get_object_or_404(Attendance, group_id=group_id, date=date)
+
+        # Serialize attendance data
+        serializer = AttendanceSerializer(attendance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        logger.warning("Platform is running at risk POST")
+        today = datetime.today().date()
+
         # Check if attendance for today and the group already exists
-        if Attendance.objects.filter(date=today, group=pk).exists():
-            return Response({"message": "Attendance for this group already exists today."})
-        # Retrieve all students in the group
-        group_students = Students.objects.filter(classgroups = pk)
+        if Attendance.objects.filter(date__date=today, group_id=group_id).exists():
+            return Response({"message": "Attendance for this group already exists today."},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        # Create attendance for each student
-        for student in group_students:
-            Attendance.objects.create(
-                date=today,
-                group = ClassGroups(id=pk) ,
-                studentID=student,
-                presence=Presence(1)  # default to False or however you track presence
-            )
+        # Retrieve the group and its students
+        group = get_object_or_404(ClassGroups, id=group_id)
+        students_in_group = group.members.all()
 
-        return Response({"message": "New attendance sheet created for today."}, status=status.HTTP_201_CREATED)
+        # Create a new attendance record for each student in the group
+        attendance = Attendance.objects.create(date=today, group=group)
+        logger.info("Creation called")
+        attendance.students.set(students_in_group)  # Link all group students to the attendance record
 
+        # Set default presence for each student as needed
+        # (e.g., mark as "absent" initially or customize based on your logic)
 
-
-
+        # Serialize the created attendance data
+        serializer = AttendanceSerializer(attendance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

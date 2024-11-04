@@ -31,13 +31,12 @@ class Presence(models.Model):
     ''' Model for different presence type verified absence, unverified absence, present'''
     title = models.CharField(max_length = 100)
 
+
 class Attendance(models.Model):
     '''
     Log the attendance for a class
     '''
     date = models.DateTimeField("date published")
-    #serializer_class = ClassSerializer
-    #http_method_names = ['post']
     group = models.ForeignKey(ClassGroups, on_delete = models.CASCADE)
-    studentID = models.ForeignKey(Students, on_delete = models.CASCADE)
-    presence = models.ForeignKey(Presence, on_delete = models.CASCADE)
+    students = models.ManyToManyField(Students)
+    presence = models.ManyToManyField(Presence)
