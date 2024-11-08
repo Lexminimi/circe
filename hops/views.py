@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.http import HttpResponse
 
-from .models import Students, ClassGroups, Attendance, Presence
+from .models import Students, ClassGroups, AttendanceSheet, Presence, AttendanceRecord
 
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
@@ -41,7 +41,7 @@ def attendance( request, group_id, date=None):
     if request.method == 'GET':
         logger.warning("Platform is running at GET")
         # Retrieve attendance record by group and date
-        attendance = get_object_or_404(Attendance, group_id=group_id, date=date)
+        attendance = get_object_or_404(AttendanceSheet, group_id=group_id, date=date)
 
         # Serialize attendance data
         serializer = AttendanceSerializer(attendance)

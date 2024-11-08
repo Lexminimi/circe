@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
-from hops.models import ClassGroups, Students, Attendance, Presence
+from hops.models import ClassGroups, Students, AttendanceSheet, Presence, AttendanceRecord
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -55,10 +55,10 @@ class StudentWithPresenceSerializer(serializers.ModelSerializer):
 class AttendanceSerializer(serializers.ModelSerializer):
     groupid = serializers.IntegerField(source='group.id')
     date = serializers.DateTimeField()
-    students = serializers.SerializerMethodField()
+    sheetID = AttendanceSheet.get(date)
 
     class Meta:
-        model = Attendance
+        model = AttendanceSheet
         fields = ['groupid', 'date', 'students']
 
     def get_students(self, attendance):
