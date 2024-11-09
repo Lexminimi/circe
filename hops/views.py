@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group, User
 from rest_framework import permissions, viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from hops.serializers import GroupSerializer, UserSerializer, GroupsSerializer, AttendanceSerializer
+from hops.serializers import GroupSerializer, UserSerializer, GroupsSerializer, AttendanceSerializer,StudentAttendance
 
 
 @api_view(['GET'])
@@ -69,3 +69,11 @@ def attendance( request, group_id, date=None):
         # Serialize the created attendance data
         serializer = AttendanceSerializer(attendance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def student_attendance( request, studentid):
+    student_sheet = AttendanceRecord.objects.filter(studentID = studentid)
+
+    # Serialize attendance data
+    serializer = StudentAttendance(student_sheet, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

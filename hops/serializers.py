@@ -50,3 +50,10 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttendanceSheet
         fields = ['date', 'group','name_list']
+
+
+class StudentAttendance(serializers.ModelSerializer):
+    class Meta:
+        model = AttendanceRecord
+        fields = ['presenceID', 'sheetID']
+        depth = 1
