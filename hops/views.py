@@ -39,12 +39,11 @@ logger = logging.getLogger(__name__)
 @api_view(['POST', 'GET'])
 def attendance( request, group_id, date=None):
     if request.method == 'GET':
-        logger.warning("Platform is running at GET")
         # Retrieve attendance record by group and date
-        attendance = get_object_or_404(AttendanceSheet, group_id=group_id, date=date)
+        attendance_sheet = get_object_or_404(AttendanceSheet, group_id = group_id, date = date)
 
         # Serialize attendance data
-        serializer = AttendanceSerializer(attendance)
+        serializer = AttendanceSerializer(attendance_sheet)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
         logger.warning("Platform is running at risk POST")

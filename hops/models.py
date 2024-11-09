@@ -53,7 +53,7 @@ class AttendanceRecord(models.Model):
     """
         Tracks attendance for each student within a specific attendance sheet.
         """
-    sheetID = models.ForeignKey(AttendanceSheet, on_delete=models.CASCADE)
+    sheetID = models.ForeignKey(AttendanceSheet, related_name='name_list', on_delete=models.CASCADE)
     studentID = models.ForeignKey(Students, on_delete=models.CASCADE)
     presenceID = models.ForeignKey(Presence, on_delete=models.CASCADE)
 

@@ -39,30 +39,14 @@ class PresenceSerializer(serializers.ModelSerializer):
         model = Presence
         fields = ['id', 'title']
 
-class StudentWithPresenceSerializer(serializers.ModelSerializer):
-    presence = serializers.SerializerMethodField()
-
+class AttendanceRecordsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Students
-        fields = ['id', 'name', 'presence']
-
-    def get_presence(self, student):
-        attendance = self.context.get('attendance')
-        # Fetch presence record for this student and attendance
-        presence_record = Presence.objects.filter(attendance=attendance)
-        return presence_record.id if presence_record else None
+        model = AttendanceRecord
+        fields = ['studentID', 'presenceID']
+        depth = 1
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    groupid = serializers.IntegerField(source='group.id')
-    date = serializers.DateTimeField()
-    sheetID = AttendanceSheet.get(date)
-
+    name_list = AttendanceRecordsSerializer(many=True, read_only=True)
     class Meta:
         model = AttendanceSheet
-        fields = ['groupid', 'date', 'students']
-
-    def get_students(self, attendance):
-        students = attendance.students.all()
-        return StudentWithPresenceSerializer(
-            students, many=True, context={'attendance': attendance}
-        ).data
+        fields = ['date', 'group','name_list']
