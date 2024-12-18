@@ -16,7 +16,7 @@ class GroupsSerializer(serializers.BaseSerializer):
     def to_representation(self, instance):
         return {
             'id': instance.id,
-            'name': instance.name
+            'name': instance.groupName
         }
 
 

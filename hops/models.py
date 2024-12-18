@@ -2,12 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-def teacher_default():
-    user = User.objects.order_by('id').first()
-    if user:
-        return user.id
-    else:
-        return 1
 
 
 class Students(models.Model):
@@ -15,7 +9,7 @@ class Students(models.Model):
     Student names
     '''
     name = models.CharField(max_length=100)
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, default = teacher_default())
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
 
@@ -26,7 +20,7 @@ class ClassGroups(models.Model):
     '''
     groupName = models.CharField(max_length=100)
     members = models.ManyToManyField(Students)
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, default = teacher_default())
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.groupName
