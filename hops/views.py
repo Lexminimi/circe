@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
-from hops.serializers import GroupSerializer, UserSerializer, GroupsSerializer, AttendanceSerializer,StudentAttendance
+from hops.serializers import GroupsSerializer, UserSerializer, GroupDetailSerializer, AttendanceSerializer,StudentAttendance
 
 
 @api_view(['GET'])
@@ -28,7 +28,7 @@ def classgroup_list(request):
 def classgroup_detail(request, pk):
     group = ClassGroups.objects.get(pk  = pk)
     if request.method == 'GET':
-        serializer = GroupSerializer(group)
+        serializer = GroupDetailSerializer(group)
         return Response(serializer.data)
 
 import logging
@@ -55,6 +55,31 @@ def attendance( request, group_id, date=None):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
+@api_view(['POST'])
+def create_attendance_sheet(request, group_id):
+    if request.method == 'POST':
+        # Use today's date dynamically
+        current_date = datetime.now().date().strftime('%Y-%m-%d')
+
+        # Create the attendance sheet with the current date
+        new_sheet = AttendanceSheet.objects.create(date=current_date, group_id=group_id)
+
+        # Fetch students and the default presence type
+        students = ClassGroups.objects.filter(pk=group_id).values_list('members', flat=True)
+        presence_type = Presence.objects.first()
+
+        # Bulk create attendance records
+        attendance_records = [
+            AttendanceRecord(sheetID=new_sheet, studentID_id=student, presenceID=presence_type)
+            for student in students
+        ]
+        AttendanceRecord.objects.bulk_create(attendance_records)
+
+        # Serialize and return the response
+        serializer = AttendanceSerializer(new_sheet)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
 def student_attendance( request, studentid):

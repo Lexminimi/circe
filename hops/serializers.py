@@ -26,13 +26,13 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ['id','name']
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class GroupDetailSerializer(serializers.ModelSerializer):
     members = GroupsSerializer(many=True, read_only=True)
 
 
     class Meta:
         model = ClassGroups
-        fields = ['id', 'groupName', 'members']
+        fields = ['id', 'name', 'members']
 
 class PresenceSerializer(serializers.ModelSerializer):
     class Meta:
