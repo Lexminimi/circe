@@ -12,6 +12,8 @@ from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from hops.serializers import GroupsSerializer, UserSerializer, GroupDetailSerializer, AttendanceSerializer,StudentAttendance
 
+from .serializers import PresenceSerializer
+
 
 @api_view(['GET'])
 def classgroup_list(request):
@@ -88,3 +90,13 @@ def student_attendance( request, studentid):
     # Serialize attendance data
     serializer = StudentAttendance(student_sheet, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def presence_types(request):
+    try:
+        if request.method == 'GET':
+            queryset = Presence.objects.order_by('id')
+            serializer = PresenceSerializer(queryset, many=True)
+            return Response(serializer.data)
+    except ClassGroups.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
