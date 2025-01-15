@@ -62,24 +62,31 @@ def create_attendance_sheet(request, group_id):
     if request.method == 'POST':
         # Use today's date dynamically
         current_date = datetime.now().date().strftime('%Y-%m-%d')
+        if AttendanceSheet.objects.filter(date = current_date, group_id = group_id).exists():
+            # Retrieve attendance record by group and date
+            attendance_sheet = get_object_or_404(AttendanceSheet, group_id=group_id, date = current_date )
 
-        # Create the attendance sheet with the current date
-        new_sheet = AttendanceSheet.objects.create(date=current_date, group_id=group_id)
+            # Serialize attendance data
+            serializer = AttendanceSerializer(attendance_sheet)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Create the attendance sheet with the current date
+            new_sheet = AttendanceSheet.objects.create(date = current_date, group_id = group_id)
 
-        # Fetch students and the default presence type
-        students = ClassGroups.objects.filter(pk=group_id).values_list('members', flat=True)
-        presence_type = Presence.objects.first()
+            # Fetch students and the default presence type
+            students = ClassGroups.objects.filter(pk=group_id).values_list('members', flat=True)
+            presence_type = Presence.objects.first()
 
-        # Bulk create attendance records
-        attendance_records = [
-            AttendanceRecord(sheetID=new_sheet, studentID_id=student, presenceID=presence_type)
-            for student in students
-        ]
-        AttendanceRecord.objects.bulk_create(attendance_records)
+            # Bulk create attendance records
+            attendance_records = [
+                AttendanceRecord(sheetID=new_sheet, studentID_id=student, presenceID=presence_type)
+                for student in students
+            ]
+            AttendanceRecord.objects.bulk_create(attendance_records)
 
-        # Serialize and return the response
-        serializer = AttendanceSerializer(new_sheet)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Serialize and return the response
+            serializer = AttendanceSerializer(new_sheet)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
