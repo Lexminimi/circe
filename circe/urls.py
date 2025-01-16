@@ -28,6 +28,7 @@ urlpatterns = [
     path('group/<int:pk>', views.classgroup_detail),
     path('attendance/<int:group_id>/<str:date>/', views.attendance, name='attendance_detail'),
     path('create_attendance/<int:group_id>/', views.create_attendance_sheet, name = 'create_attend_sheet'),
+    path('update_attendance/<int:groupID>/<int:studentID>/<int:attendType>/', views.attendance_update, name = 'update_attendance_record'),
     path('studentattendance/<int:studentid>', views.student_attendance, name = 'attendance of the student'),
     path('presences/', views.presence_types, name = 'presence types'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

@@ -107,3 +107,21 @@ def presence_types(request):
             return Response(serializer.data)
     except ClassGroups.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def attendance_update(request, groupID, studentID,attendType, date = None):
+    if request.method == 'POST':
+        # Use today's date dynamically if no date is provided
+        if date == None:
+            current_date = datetime.now().date().strftime('%Y-%m-%d')
+
+        s = AttendanceSheet.objects.get(date = current_date, group_id = groupID)
+
+        if AttendanceSheet.objects.filter(date = current_date, group_id = groupID).exists():
+            # Retrieve attendance record by group and date
+            student_attendance = get_object_or_404(AttendanceRecord, sheetID = s, studentID = studentID )
+            student_attendance.presenceID = Presence.objects.get(id=attendType)
+            student_attendance.save()
+            # Serialize attendance data
+            serializer = StudentAttendance(student_attendance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
