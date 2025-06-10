@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.http import HttpResponse
+from drf_yasg.utils import swagger_auto_schema
 
 from .models import Students, ClassGroups, AttendanceSheet, Presence, AttendanceRecord
 
@@ -14,9 +15,14 @@ from hops.serializers import GroupsSerializer, UserSerializer, GroupDetailSerial
 
 from .serializers import PresenceSerializer
 
-
+@swagger_auto_schema()
 @api_view(['GET'])
 def classgroup_list(request):
+    """
+    List all class groups.
+    
+    Returns a list of all class groups in the system.
+    """
     try:
         if request.method == 'GET':
             queryset = ClassGroups.objects.order_by('id')
@@ -28,7 +34,12 @@ def classgroup_list(request):
 
 @api_view(['GET'])
 def classgroup_detail(request, pk):
-    group = ClassGroups.objects.get(pk  = pk)
+    """
+    Retrieve a specific class group.
+    
+    Returns detailed information about a specific class group, including its members.
+    """
+    group = ClassGroups.objects.get(pk=pk)
     if request.method == 'GET':
         serializer = GroupDetailSerializer(group)
         return Response(serializer.data)
@@ -41,6 +52,12 @@ logger = logging.getLogger(__name__)
 @api_view(['GET','POST'])
 @csrf_exempt
 def attendance( request, group_id, date=None):
+    """
+    Get or create attendance records for a class group on a specific date.
+    
+    GET: Retrieve attendance records for the specified group and date.
+    POST: Create new attendance records for the specified group and date.
+    """
     if request.method == 'GET':
         # Retrieve attendance record by group and date
         attendance_sheet = get_object_or_404(AttendanceSheet, group_id = group_id, date = date)
@@ -59,6 +76,11 @@ def attendance( request, group_id, date=None):
 
 @api_view(['POST'])
 def create_attendance_sheet(request, group_id):
+    """
+    Create a new attendance sheet for a class group.
+    
+    Creates a new attendance sheet for today's date and initializes attendance records for all members.
+    """
     if request.method == 'POST':
         # Use today's date dynamically
         current_date = datetime.now().date().strftime('%Y-%m-%d')
@@ -92,6 +114,11 @@ def create_attendance_sheet(request, group_id):
 
 @api_view(['GET'])
 def student_attendance( request, studentid):
+    """
+    Get attendance records for a specific student.
+    
+    Returns all attendance records for the specified student.
+    """
     student_sheet = AttendanceRecord.objects.filter(studentID = studentid)
 
     # Serialize attendance data
@@ -100,6 +127,11 @@ def student_attendance( request, studentid):
 
 @api_view(['GET'])
 def presence_types(request):
+    """
+    List all presence types.
+    
+    Returns a list of all possible presence types (e.g., Present, Absent, etc.).
+    """
     try:
         if request.method == 'GET':
             queryset = Presence.objects.order_by('id')
@@ -110,6 +142,11 @@ def presence_types(request):
 
 @api_view(['POST'])
 def attendance_update(request, groupID, studentID,attendType, date = None):
+    """
+    Update a student's attendance status.
+    
+    Updates the attendance status for a specific student in a specific group on a specific date.
+    """
     if request.method == 'POST':
         # Use today's date dynamically if no date is provided
         if date == None:
@@ -125,3 +162,18 @@ def attendance_update(request, groupID, studentID,attendType, date = None):
             # Serialize attendance data
             serializer = StudentAttendance(student_attendance)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def teacher_groups(request, teacher_id):
+    """
+    List all class groups for a specific teacher.
+    
+    Returns all class groups and their members for the specified teacher.
+    """
+    try:
+        if request.method == 'GET':
+            queryset = ClassGroups.objects.filter(teacher_id=teacher_id).order_by('id')
+            serializer = GroupDetailSerializer(queryset, many=True)
+            return Response(serializer.data)
+    except ClassGroups.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)

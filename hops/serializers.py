@@ -27,12 +27,11 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class GroupDetailSerializer(serializers.ModelSerializer):
-    members = GroupsSerializer(many=True, read_only=True)
-
+    members = StudentSerializer(many=True, read_only=True)
 
     class Meta:
         model = ClassGroups
-        fields = ['id', 'name', 'members']
+        fields = ['id', 'groupName', 'members']
 
 class PresenceSerializer(serializers.ModelSerializer):
     class Meta:

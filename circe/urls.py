@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from hops import views
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 
 router = routers.DefaultRouter()
@@ -26,13 +29,18 @@ urlpatterns = [
     path('', include(router.urls)),
     path('groups/', views.classgroup_list),
     path('group/<int:pk>', views.classgroup_detail),
+    path('teacher/<int:teacher_id>/groups/', views.teacher_groups, name='teacher_groups'),
     path('attendance/<int:group_id>/<str:date>/', views.attendance, name='attendance_detail'),
     path('create_attendance/<int:group_id>/', views.create_attendance_sheet, name = 'create_attend_sheet'),
     path('update_attendance/<int:groupID>/<int:studentID>/<int:attendType>/', views.attendance_update, name = 'update_attendance_record'),
     path('studentattendance/<int:studentid>', views.student_attendance, name = 'attendance of the student'),
     path('presences/', views.presence_types, name = 'presence types'),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
     #path("groups/", views.trainingGroups, name="trainingGroups"),
-    #path('api-auth/', include('rest_framework.urls'))
+    path('api/', include(router.urls)),  # Your API routes
+    # API Documentation URLs
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
