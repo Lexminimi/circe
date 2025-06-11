@@ -49,14 +49,13 @@ import logging
 # Set up logging
 logger = logging.getLogger(__name__)
 
-@api_view(['GET','POST'])
+@api_view(['GET'])
 @csrf_exempt
 def attendance( request, group_id, date=None):
     """
     Get or create attendance records for a class group on a specific date.
     
     GET: Retrieve attendance records for the specified group and date.
-    POST: Create new attendance records for the specified group and date.
     """
     if request.method == 'GET':
         # Retrieve attendance record by group and date
@@ -66,13 +65,6 @@ def attendance( request, group_id, date=None):
         serializer = AttendanceSerializer(attendance_sheet)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = AttendanceSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
 
 @api_view(['POST'])
 def create_attendance_sheet(request, group_id):
